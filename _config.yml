@@ -18,37 +18,24 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: Your awesome title
-email: your-email@example.com
+title: Andrew C. W. Myers
+email: myersa at stanford dot edu
 description: >- # this means to ignore newlines until "baseurl:"
   Write an awesome description for your new site here. You can edit this
   line in _config.yml. It will appear in your document head meta (for
   Google search results) and in your feed.xml site description.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
-# twitter_username: jekyllrb
-github_username:  AndyMyersSkol
+#twitter_username:
+#github_username:
 
 # Build settings
-remote_theme: "mmistakes/minimal_mistakes@4.24.0"
-minimal_mistakes_skin: "contrast"
+remote_theme: "mmistakes/minimal-mistakes@4.24.0"
+minimal_mistakes_skin: "contrast" # "air", "aqua", "contrast", "dark", "dirt", "neon", "mint", "plum", "sunrise"
 plugins:
   - jekyll-feed
   - jekyll-include-cache
-
-author:
-  name: "Andrew C. W. Myers"
-  avatar: "/assets/images/bio-photo.jpg"
-  bio: "A person..." # Note: Markdown is allowed
-  location: "Somewhere"
-  links:
-    - label: "GitHub"
-      icon: "fab fa-fw fa-github"
-      url: "https://github.com/mmistakes"
-    - label: "Github"
-      icon: "fa-linkedin"
-      url: "https://instagram.com/mmistakes"
-
+# Defaults
 defaults:
   # _posts
   - scope:
@@ -56,3 +43,38 @@ defaults:
       type: posts
     values:
       author_profile: true
+
+# Author Page
+author:
+  name: "name"
+  avatar: "/assets/images/bio-photo.jpg"
+  bio: "predoc" # Note: Markdown is allowed
+  location: "Palo Alto, CA"
+  links:
+    - label: "Twitter"
+      icon: "fab fa-fw fa-twitter-square"
+      url: "https://twitter.com/"
+    - label: "GitHub"
+      icon: "fab fa-fw fa-github"
+      url: "https://github.com/"
+
+
+# Exclude from processing.
+# The following items will not be processed, by default.
+# Any item listed under the `exclude:` key here will be automatically added to
+# the internal "default list".
+#
+# Excluded items can be processed by explicitly listing the directories or
+# their entries' file path in the `include:` list.
+#
+# exclude:
+#   - .sass-cache/
+#   - .jekyll-cache/
+#   - gemfiles/
+#   - Gemfile
+#   - Gemfile.lock
+#   - node_modules/
+#   - vendor/bundle/
+#   - vendor/cache/
+#   - vendor/gems/
+#   - vendor/ruby/

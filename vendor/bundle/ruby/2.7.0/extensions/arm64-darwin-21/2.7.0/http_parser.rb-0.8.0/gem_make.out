@@ -1,11 +1,11 @@
-current directory: /Users/andrewmyers/Dropbox/AndySite/vendor/bundle/ruby/2.7.0/gems/http_parser.rb-0.8.0/ext/ruby_http_parser
-/Users/andrewmyers/.rbenv/versions/2.7.2/bin/ruby -I /Users/andrewmyers/.rbenv/versions/2.7.2/lib/ruby/2.7.0 -r ./siteconf20220726-51457-2821tp.rb extconf.rb
+current directory: /Users/andrewmyers/Dropbox/AndyMyersSkol.github.io/vendor/bundle/ruby/2.7.0/gems/http_parser.rb-0.8.0/ext/ruby_http_parser
+/Users/andrewmyers/.rbenv/versions/2.7.2/bin/ruby -I /Users/andrewmyers/.rbenv/versions/2.7.2/lib/ruby/2.7.0 -r ./siteconf20220726-63308-fpd6jw.rb extconf.rb
 creating Makefile
 
-current directory: /Users/andrewmyers/Dropbox/AndySite/vendor/bundle/ruby/2.7.0/gems/http_parser.rb-0.8.0/ext/ruby_http_parser
+current directory: /Users/andrewmyers/Dropbox/AndyMyersSkol.github.io/vendor/bundle/ruby/2.7.0/gems/http_parser.rb-0.8.0/ext/ruby_http_parser
 make "DESTDIR=" clean
 
-current directory: /Users/andrewmyers/Dropbox/AndySite/vendor/bundle/ruby/2.7.0/gems/http_parser.rb-0.8.0/ext/ruby_http_parser
+current directory: /Users/andrewmyers/Dropbox/AndyMyersSkol.github.io/vendor/bundle/ruby/2.7.0/gems/http_parser.rb-0.8.0/ext/ruby_http_parser
 make "DESTDIR="
 compiling ruby_http_parser.c
 ruby_http_parser.c:323:22: warning: '(' and '{' tokens introducing statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
@@ -465,6 +465,6 @@ ruby_http_parser.c:528:19: note: ')' token is here
 compiling ryah_http_parser.c
 linking shared-object ruby_http_parser.bundle
 
-current directory: /Users/andrewmyers/Dropbox/AndySite/vendor/bundle/ruby/2.7.0/gems/http_parser.rb-0.8.0/ext/ruby_http_parser
+current directory: /Users/andrewmyers/Dropbox/AndyMyersSkol.github.io/vendor/bundle/ruby/2.7.0/gems/http_parser.rb-0.8.0/ext/ruby_http_parser
 make "DESTDIR=" install
-/usr/bin/install -c -m 0755 ruby_http_parser.bundle ./.gem.20220726-51457-s1mbtt
+/usr/bin/install -c -m 0755 ruby_http_parser.bundle ./.gem.20220726-63308-113sciz

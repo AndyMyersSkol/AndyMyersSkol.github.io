@@ -1,2 +1,2 @@
-# AndyMyersSkol.github.io
-Andy Myers's website.
+# jmalzahn_website
+Janet Malzahn's academic website.

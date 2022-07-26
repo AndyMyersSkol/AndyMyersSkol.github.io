@@ -1,5 +1,5 @@
-current directory: /Users/andrewmyers/Dropbox/AndySite/vendor/bundle/ruby/2.7.0/gems/ffi-1.15.5/ext/ffi_c
-/Users/andrewmyers/.rbenv/versions/2.7.2/bin/ruby -I /Users/andrewmyers/.rbenv/versions/2.7.2/lib/ruby/2.7.0 -r ./siteconf20220726-51457-ehx03v.rb extconf.rb
+current directory: /Users/andrewmyers/Dropbox/AndyMyersSkol.github.io/vendor/bundle/ruby/2.7.0/gems/ffi-1.15.5/ext/ffi_c
+/Users/andrewmyers/.rbenv/versions/2.7.2/bin/ruby -I /Users/andrewmyers/.rbenv/versions/2.7.2/lib/ruby/2.7.0 -r ./siteconf20220726-63308-109onlr.rb extconf.rb
 checking for ffi_prep_closure_loc() in -lffi... yes
 checking for ffi_prep_cif_var()... yes
 checking for ffi_raw_call()... yes
@@ -8,10 +8,10 @@ checking for whether -pthread is accepted as LDFLAGS... yes
 creating extconf.h
 creating Makefile
 
-current directory: /Users/andrewmyers/Dropbox/AndySite/vendor/bundle/ruby/2.7.0/gems/ffi-1.15.5/ext/ffi_c
+current directory: /Users/andrewmyers/Dropbox/AndyMyersSkol.github.io/vendor/bundle/ruby/2.7.0/gems/ffi-1.15.5/ext/ffi_c
 make "DESTDIR=" clean
 
-current directory: /Users/andrewmyers/Dropbox/AndySite/vendor/bundle/ruby/2.7.0/gems/ffi-1.15.5/ext/ffi_c
+current directory: /Users/andrewmyers/Dropbox/AndyMyersSkol.github.io/vendor/bundle/ruby/2.7.0/gems/ffi-1.15.5/ext/ffi_c
 make "DESTDIR="
 compiling AbstractMemory.c
 AbstractMemory.c:1100:17: warning: '(' and '{' tokens introducing statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
@@ -4085,6 +4085,6 @@ Variadic.c:218:58: note: ')' token is here
 compiling ffi.c
 linking shared-object ffi_c.bundle
 
-current directory: /Users/andrewmyers/Dropbox/AndySite/vendor/bundle/ruby/2.7.0/gems/ffi-1.15.5/ext/ffi_c
+current directory: /Users/andrewmyers/Dropbox/AndyMyersSkol.github.io/vendor/bundle/ruby/2.7.0/gems/ffi-1.15.5/ext/ffi_c
 make "DESTDIR=" install
-/usr/bin/install -c -m 0755 ffi_c.bundle ./.gem.20220726-51457-qcjvol
+/usr/bin/install -c -m 0755 ffi_c.bundle ./.gem.20220726-63308-1mkueuw
