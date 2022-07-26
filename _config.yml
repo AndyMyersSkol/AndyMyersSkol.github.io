@@ -30,10 +30,11 @@ url: "" # the base hostname & protocol for your site, e.g. http://example.com
 github_username:  AndyMyersSkol
 
 # Build settings
-theme: minimal-mistakes-jekyll
+remote_theme: "mmistakes/minimal_mistakes@4.24.0"
 minimal_mistakes_skin: "contrast"
 plugins:
   - jekyll-feed
+  - jekyll-include-cache
 
 author:
   name: "Andrew C. W. Myers"
