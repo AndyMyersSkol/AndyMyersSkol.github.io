@@ -1,0 +1,22 @@
+<meta charset="utf-8">
+
+<!-- minimal-mistakes theme-->
+<link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
+
+<!-- Inherited from Matt Blackwell and GH minimal themes -->
+<link rel="stylesheet" href="/stylesheets/shiro.css">
+<link rel="stylesheet" href="/stylesheets/styles.css">
+<link rel="stylesheet" href="/stylesheets/kube.css">
+
+<!-- Color -->
+<link rel="stylesheet" href="/stylesheets/pygment_trac.css">
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+
+{% if site.head_scripts %}
+  {% for script in site.head_scripts %}
+    <script src="{{ script | relative_url }}"></script>
+  {% endfor %}
+{% endif %}
