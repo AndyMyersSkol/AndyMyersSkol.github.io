@@ -1,2 +1,2 @@
-# jmalzahn_website
-Janet Malzahn's academic website.
+# AndyMyersSite
+Andy Myers's academic website.
