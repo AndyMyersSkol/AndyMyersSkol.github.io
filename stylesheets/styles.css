@@ -285,18 +285,22 @@ footer {
 
 details[open] {
   display: block;
-  background-color: lightslategrey;
+  background-color: #bdb9b9;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 10px;
+  padding-top: 10px;
 }
 
 /* For nav bar */
 a, a:visited{
-     color: #9e221b;
+     color: #9e221b;;
      text-decoration:none;
 }
 
-a:hover {
+a:hover{
   text-decoration:underline;
-  color:  #9e221b;
+  color:  #9e221b;;
 }
 
 /* For bib */
@@ -307,8 +311,34 @@ a.bib, a:visited.bib{
 }
 
 a:hover.bib {
+  color: #9e221b;
   text-decoration:underline;
   font-size: 120%;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.myGallery {
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
+.myGallery img {
+  width: 200px;
+  height:  200px;
+}
 
