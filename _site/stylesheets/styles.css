@@ -318,18 +318,18 @@ a:hover.bib {
 
 
 
+.greedy-nav a, a:visited {
+    color: #9e221b;
+}
+
+greedy-nav .visible-links a:before {
+  background: green;
+  }
 
 
-
-
-
-
-
-
-
-
-
-
+.greedy-nav a:hover {
+    color: #9e221b;
+}
 
 .myGallery {
   display: grid;
