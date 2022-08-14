@@ -12,6 +12,8 @@ header {
   width: 270px;
   float: left;
   position: fixed;
+  height:  90%;
+  overflow-y: scroll;
 }
 
 /* h4 */
@@ -68,7 +70,7 @@ a small {
 }
 
 .wrapper {
-  width: 1020px;
+  width: 1000px;
   margin: 0 auto;
 }
 
@@ -342,3 +344,9 @@ greedy-nav .visible-links a:before {
   height:  200px;
 }
 
+
+#leftCol {
+    height: 85%;
+    position: relative;
+    overflow-y: scroll;
+}
