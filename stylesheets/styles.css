@@ -201,6 +201,9 @@ footer {
   div.wrapper {
     width: auto;
     margin: 0;
+    /* Added for debugging */
+    height:  90%;
+    overflow-y: scroll;
   }
 
   header, section, footer {
@@ -349,4 +352,9 @@ greedy-nav .visible-links a:before {
     height: 85%;
     position: relative;
     overflow-y: scroll;
+}
+
+header.my_sidebar {
+   height:  90%;
+  overflow-y: scroll;
 }
