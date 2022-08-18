@@ -1,27 +1,14 @@
-<!doctype html>
-<html lang="en" class="no-js">
-<title>Andrew C. W. Myers</title>
-
-<center><h1>Andrew C. W. Myers</h1><hr width="25%"></center>
-
-<body style="background-color: #c772d4; /* For browsers that do not support gradients */
-  background-image: linear-gradient(90deg, purple, white,yellow);">
-<head>
-  <meta charset="utf-8">
-
-<!-- minimal-mistakes -->
-<link rel="stylesheet" href="/assets/css/main.css">
-
-<!-- From Shiro -->
-<link rel="stylesheet" href="/stylesheets/styles.css">
-
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-</head>
-
-<body class="layout--default">
-
-
-  <center>
+---
+layout: default
+title: Andrew C. W. Myers
+description: XX
+sitemap:
+    priority: 1.0
+    lastmod: 2017-11-02
+    changefreq: weekly
+---
+		
+<center>
 <h1> Johnson Family Outhouse Rebuild </h1>
 <h2> Design Central </h2>
 
@@ -79,3 +66,36 @@ Specifications:
 <br>
 
 </center>
+
+
+
+
+						<!-- Posts -->
+							<section class="posts">
+                {% for post in site.posts limit:3 %}
+                {% assign mod3 = forloop.index | modulo: 3 %}
+  								<article>
+  									<header>
+  										<span class="date">{{ post.date | date_to_string }}</span>
+  										<h2><a href="{{ post.url | absolute_url }}">{{ post.title }}</a></h2>
+  									</header>
+  									<a href="{{ post.url | absolute_url }}" class="image fit"><img src="{{ post.image | absolute_url }}" alt="" /></a>
+  									<p>{{ post.excerpt }}</p>
+  									<ul class="actions">
+  										<li><a href="{{ post.url | absolute_url }}" class="button">Full Story</a></li>
+  									</ul>
+  								</article>
+                  {% if mod3 == 0 %}
+                  <article>
+  									<header>
+  										<h2><a href="#">Sponsored</a></h2>
+  									</header>
+
+  								</article>
+                  {% endif %}
+                {% endfor %}
+
+							</section>
+
+						<!-- Footer -->
+							
