@@ -44,6 +44,12 @@ defaults:
     values:
       author_profile: true
 
+analytics:
+  provider: "google-gtag"
+  google:
+    tracking_id: "G-0M3BLG4041"
+    anonymize_ip: false # default
+
 # Author Page
 author:
   name: "name"
