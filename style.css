@@ -1,0 +1,172 @@
+/* styles.css */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f7f5f5; /* background color */
+}
+
+.profile {
+    color: #8B1315;
+    display: flex;
+    align-items: center;
+    flex-direction: row; /* Default direction */
+    transition: flex-direction 0.3s ease; /* Smooth transition for layout changes */
+}
+
+.title {
+    color: #777;
+    font-size: 15px;
+    margin-bottom: 5px;
+}
+
+.email {
+    color: #777;
+    font-size: 15px;
+    margin-top: 5px;
+    margin-bottom: 20px;
+}
+
+.bio {
+    text-align: left;
+}
+
+.bio p {
+    color: #333;
+    line-height: 1.6;
+}
+
+.bio h1 {
+    margin: 0;
+    color: #75000c;
+    font-size:36px;
+}
+
+.publication {
+    text-align: left;
+}
+
+.publication p {
+    color: #333;
+    line-height: 1.4;
+}
+
+.publication h1 {
+    margin: 0;
+    color: #75000c;
+    font-size:36px;
+}
+
+.publication h2 {
+    margin-top:35px;
+    margin-bottom:10px;
+}
+
+a {
+    color: #8B1315;
+}
+
+a:hover {
+    color: red;
+}
+
+.navigation {
+    text-align: center;
+    margin-bottom: 20px; /* Add margin below the nav bar */
+    margin-top: -20px;
+}
+
+.navigation ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center; /* This centers the flex items (the list) horizontally */
+}
+
+.navigation li {
+    display: inline;
+}
+
+.navigation li a:hover {
+    color: #000; /* Even darker text color on hover */
+}
+
+.navigation li a {
+    display: inline-block;
+    color: #333;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+/* Highlight the "Welcome" link by default */
+.navigation li a.active {
+    color: #000; /* Darker text color for the active link */
+    font-weight: bold; /* Make the active link bold */
+}
+
+
+
+/* styles.css */
+:root {
+    /* Define base sizes */
+    --base-margin: 10px;
+    --base-padding: 10px;
+    --responsive-margin: 700px; /* Use viewport width for responsive side margins */
+}
+
+.container {
+    width: var(--responsive-margin) ;
+    margin: var(--base-margin) auto var(--base-margin) auto;
+    padding: var(--base-padding);
+    transition: padding 0.3s ease, margin 0.3s ease; /* Smooth transition for padding and margin */
+}
+
+.profile-pic {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin-right: 20px; /* Space between image and text */
+    transition: margin 0.3s ease; /* Transition for margin adjustments */
+}
+
+/* Adjust layout for smaller screens without a hard breakpoint */
+@media (max-width: 720px) {
+    :root {
+        --responsive-margin: 400; /* Smaller margins for smaller screens */
+    }
+
+    .profile {
+        flex-direction: column; /* Stack elements vertically on smaller screens */
+    }
+
+    .profile-pic {
+        margin-right: 0;
+        margin-bottom: 20px; /* Space below image when stacked */
+    }
+}
+
+/* Additional styles */
+.info h1, .title, .email {
+    transition: transform 2s ease; /* Example transition for text scaling or moving */
+
+
+.info {
+    text-align: center;
+    overflow: hidden; /* Prevents overflow outside the container */
+}
+
+.info h1, .info .title, .info .email {
+    white-space: nowrap; /* Prevents the text from wrapping */
+    overflow: hidden; /* Hides text that overflows the element's box */
+    text-overflow: ellipsis; /* Adds an ellipsis to indicate overflowed content */
+    max-width: 100%; /* Ensures these elements do not exceed the container's width */
+}
+
+
+
+
+
+
+
+
