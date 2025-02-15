@@ -267,14 +267,28 @@ h2 {
     margin-bottom: 5px;
 }
 
-    /* Hide the default triangle on mobile devices */
-summary::-webkit-details-marker, summary::marker {
-    display: none;
+/* Hide the default grey triangle (browser-generated one) */
+summary::-webkit-details-marker {
+    display: none !important;
 }
 
 summary::marker {
-    display: none;
+    display: none !important;
 }
+
+/* Ensure the black arrow stays visible */
+.dropdown-arrow {
+    display: inline-block !important;
+    font-size: 0.8em;
+    color: black !important; /* Ensure it's black */
+    transition: transform 0.2s ease-in-out;
+}
+
+/* Rotate the black arrow when details are open */
+details[open] .dropdown-arrow {
+    transform: rotate(90deg);
+}
+
 
 </style>
 <script src="script.js"></script>
