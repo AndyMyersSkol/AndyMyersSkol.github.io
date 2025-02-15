@@ -275,6 +275,14 @@ summary::marker {
     display: none;
 }
 
+details:first-of-type summary::marker,
+:is(::-webkit-details-marker) {
+  content: "+ ";
+  font-family: monospace;
+  color: red;
+  font-weight: bold;
+}
+
 
 </style>
 <script src="script.js"></script>
