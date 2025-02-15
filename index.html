@@ -192,7 +192,42 @@ ul.dashed li::before {
     left: 0;
 }
 
+/* Style for the replication link */
+.replication-link {
+    font-size: 1em;
+    color: #770712;
+    text-decoration: none;
+    font-weight: normal;
+}
+.replication-link:hover {
+    text-decoration: underline;
+}
+/* Style for the vertical separator "|" */
+.separator {
+    color: #666;
+    font-weight: normal;
+}
 
+/* Ensure the Abstract button and Replication Archive remain aligned */
+summary {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between Abstract and Replication Archive */
+    font-weight: bold;
+    font-size: 1em;
+    cursor: pointer;
+    margin-top: 10px; /* Adds space between the title and the Abstract button */
+}
+/* Style the abstract content with justified text and a light grey background */
+.abstract-text {
+    margin-top: 8px;
+    padding: 10px;
+    background-color: #F8F9FA; /* Light grey background */
+    text-align: justify; /* Justify text */
+    border-radius: 0px; /* No rounded corners */
+    width: 92%; /* Makes the dropdown slightly smaller than full width */
+    margin: 0 auto; /* Centers the dropdown */
+}
 </style>
 <script src="script.js"></script>
 </body>
