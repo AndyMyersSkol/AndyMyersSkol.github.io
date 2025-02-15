@@ -42,7 +42,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </nav>
     
     <div class="bio">
-        <p>I am a third year Ph.D. candidate and the E. K. Potter Stanford Graduate Fellow in Political Science at Stanford University. My research pairs large-scale datasets with modern causal inference techniques and machine learning to study American elections, campaign finance, and election administration. </p>
+        <p>II am a third year Ph.D. candidate and the E. K. Potter Stanford Graduate Fellow in Political Science at Stanford University. My research pairs large-scale datasets with modern causal inference techniques and machine learning to study American elections, campaign finance, and election administration. </p>
     </div>
 
 
@@ -263,21 +263,18 @@ h2 {
     margin-bottom: 5px;
 }
 
-/* Hide the default triangle on mobile devices */
-summary::-webkit-details-marker {
-    display: none;
-}
-summary::marker {
-    display: none;
-}
-
 details > summary {
-    list-style: none; /* Removes the default triangle */
-    -webkit-appearance: none; /* Removes browser styling in WebKit browsers */
+    list-style: none; /* Remove default bullet/triangle */
+    -webkit-appearance: none; /* Remove WebKit default styling */
     appearance: none;
     cursor: pointer;
     display: flex;
     align-items: center;
+}
+
+/* Removes the default browser triangle in some browsers */
+summary::-webkit-details-marker {
+    display: none;
 }
 
 summary::before {
@@ -288,8 +285,9 @@ summary::before {
 }
 
 details[open] summary::before {
-    transform: rotate(90deg); /* Rotates when details is expanded */
+    transform: rotate(90deg); /* Rotates when expanded */
 }
+
 
 
 
