@@ -217,7 +217,34 @@ ul.dashed li::before {
     width: 92%; /* Makes the dropdown slightly smaller than full width */
     margin: 0 auto; /* Centers the dropdown */
 }
+
+/* Ensure the Abstract button and Replication Archive remain aligned */
+summary {
+    align-items: center;
+    gap: 10px; /* Space between Abstract and Replication Archive */
+    font-weight: bold;
+    font-size: 1em;
+    cursor: pointer;
+    margin-top: 10px; /* Adds space between the title and the Abstract button */
+}
+
+/* Explicitly set the triangle to display properly */
+.dropdown-arrow {
+    font-size: 0.8em;
+    display: inline-block; /* Ensures it's treated as a visible inline element */
+    transition: transform 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+/* Rotate the triangle when details are open */
+details[open] .dropdown-arrow {
+    transform: rotate(90deg); /* Rotates to ▼ when open */
+}
+
+
+
 </style>
+
+
 <script src="script.js"></script>
 </body>
 </html>
