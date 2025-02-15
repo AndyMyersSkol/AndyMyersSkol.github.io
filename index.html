@@ -266,12 +266,26 @@ h2 {
     margin-top: 10px;
     margin-bottom: 5px;
 }
-/* Hide the default triangle on mobile devices */
+/* Hide the default triangle but keep the black arrow */
 summary::-webkit-details-marker {
     display: none;
 }
+
 summary::marker {
     display: none;
+}
+
+/* Ensure the black arrow remains visible */
+.dropdown-arrow {
+    display: inline-block;
+    font-size: 0.8em;
+    color: black; /* Ensure it's black */
+    transition: transform 0.2s ease-in-out;
+}
+
+/* Rotate the black arrow when details are open */
+details[open] .dropdown-arrow {
+    transform: rotate(90deg);
 }
 
 </style>
