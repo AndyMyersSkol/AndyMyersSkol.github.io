@@ -42,7 +42,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </nav>
     
     <div class="bio">
-        <p>II am a third year Ph.D. candidate and the E. K. Potter Stanford Graduate Fellow in Political Science at Stanford University. My research pairs large-scale datasets with modern causal inference techniques and machine learning to study American elections, campaign finance, and election administration. </p>
+        <p>I am a third year Ph.D. candidate and the E. K. Potter Stanford Graduate Fellow in Political Science at Stanford University. My research pairs large-scale datasets with modern causal inference techniques and machine learning to study American elections, campaign finance, and election administration. </p>
     </div>
 
 
@@ -203,7 +203,11 @@ summary {
     font-size: 1em;
     cursor: pointer;
 }
-
+/* Style for the dropdown arrow */
+.dropdown-arrow {
+    font-size: .8em;
+    transition: transform 0.2s ease-in-out;
+}
 /* Rotate the triangle when details are open */
 details[open] .dropdown-arrow {
     transform: rotate(90deg); /* Rotates to ▼ when open */
@@ -263,33 +267,13 @@ h2 {
     margin-bottom: 5px;
 }
 
-details > summary {
-    list-style: none; /* Remove default bullet/triangle */
-    -webkit-appearance: none; /* Remove WebKit default styling */
-    appearance: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-}
-
-/* Removes the default browser triangle in some browsers */
+/* Hide the default triangle on mobile devices */
 summary::-webkit-details-marker {
     display: none;
 }
-
-summary::before {
-    content: "▶"; /* Black right-pointing triangle */
-    display: inline-block;
-    margin-right: 8px;
-    transition: transform 0.2s ease;
+summary::marker {
+    display: none;
 }
-
-details[open] summary::before {
-    transform: rotate(90deg); /* Rotates when expanded */
-}
-
-
-
 
 </style>
 <script src="script.js"></script>
