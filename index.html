@@ -266,6 +266,13 @@ h2 {
     margin-top: 10px;
     margin-bottom: 5px;
 }
+/* Hide the default triangle on mobile devices */
+summary::-webkit-details-marker {
+    display: none;
+}
+summary::marker {
+    display: none;
+}
 
 </style>
 <script src="script.js"></script>
