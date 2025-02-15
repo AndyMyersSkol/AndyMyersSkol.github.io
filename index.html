@@ -266,26 +266,27 @@ h2 {
     margin-top: 10px;
     margin-bottom: 5px;
 }
-/* Hide the default triangle but keep the black arrow */
-summary::-webkit-details-marker {
+/* Remove default arrow styling */
+details > summary {
+    list-style: none;
+    -webkit-appearance: none;
+}
+
+details > summary::-webkit-details-marker,
+details > summary::marker {
     display: none;
 }
 
-summary::marker {
-    display: none;
-}
-
-/* Ensure the black arrow remains visible */
+/* Ensure only your custom arrow is visible */
 .dropdown-arrow {
-    display: inline-block;
-    font-size: 0.8em;
-    color: black; /* Ensure it's black */
+    font-size: .8em;
     transition: transform 0.2s ease-in-out;
+    display: inline-block; /* Add this */
 }
 
-/* Rotate the black arrow when details are open */
-details[open] .dropdown-arrow {
-    transform: rotate(90deg);
+/* Optional: Adjust spacing if needed after removing default marker */
+summary {
+    padding-left: 0;
 }
 
 </style>
