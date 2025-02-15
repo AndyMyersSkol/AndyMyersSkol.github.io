@@ -178,14 +178,22 @@ Term limits have dramatically reshaped many features of legislative politics, ye
 <style>
 
 
-ul.dashed li::marker {
-    content: "– "; /* Replace bullet with dash */
-}
 ul.dashed {
-    list-style-position: inside;
-    padding-left: 0px;
-    margin-left: 1;
+    list-style: none; /* Remove default bullets */
+    padding-left: 0;
 }
+
+ul.dashed li {
+    position: relative;
+    padding-left: 20px; /* Adjust this value for desired alignment */
+}
+
+ul.dashed li::before {
+    content: "–"; /* Replace bullet with dash */
+    position: absolute;
+    left: 0;
+}
+
 
 /* Ensure "Abstract" and "Replication Archive" are on the same line */
 summary {
