@@ -42,7 +42,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </nav>
     
     <div class="bio">
-        <p>I am a third year Ph.D. candidate and the E. K. Potter Stanford Graduate Fellow in Political Science at Stanford University. My research pairs large-scale datasets with modern causal inference techniques and machine learning to study American elections, campaign finance, and election administration. </p>
+        <p>II am a third year Ph.D. candidate and the E. K. Potter Stanford Graduate Fellow in Political Science at Stanford University. My research pairs large-scale datasets with modern causal inference techniques and machine learning to study American elections, campaign finance, and election administration. </p>
     </div>
 
 
@@ -203,11 +203,7 @@ summary {
     font-size: 1em;
     cursor: pointer;
 }
-/* Style for the dropdown arrow */
-.dropdown-arrow {
-    font-size: .8em;
-    transition: transform 0.2s ease-in-out;
-}
+
 /* Rotate the triangle when details are open */
 details[open] .dropdown-arrow {
     transform: rotate(90deg); /* Rotates to ▼ when open */
@@ -277,10 +273,19 @@ summary::marker {
 
 details > summary {
     list-style: none;
-    -webkit-appearance: none;
+    -webkit-appearance: none; /* Removes default triangle */
+    appearance: none;
     cursor: pointer;
     display: flex;
     align-items: center;
+}
+
+.dropdown-arrow {
+    content: "▶";  /* Black right-pointing triangle */
+    display: inline-block;
+    margin-right: 8px;
+    font-size: .8em;
+    transition: transform 0.2s ease;
 }
 
 
