@@ -266,27 +266,13 @@ h2 {
     margin-top: 10px;
     margin-bottom: 5px;
 }
-/* Remove default arrow styling */
-details > summary {
-    list-style: none;
-    -webkit-appearance: none;
-}
 
-details > summary::-webkit-details-marker,
-details > summary::marker {
+    /* Hide the default triangle on mobile devices */
+summary::-webkit-details-marker {
     display: none;
 }
-
-/* Ensure only your custom arrow is visible */
-.dropdown-arrow {
-    font-size: .8em;
-    transition: transform 0.2s ease-in-out;
-    display: inline-block; /* Add this */
-}
-
-/* Optional: Adjust spacing if needed after removing default marker */
-summary {
-    padding-left: 0;
+summary::marker {
+    display: none;
 }
 
 </style>
