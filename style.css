@@ -128,11 +128,10 @@ a:hover {
 }
 
 .profile-pic {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    margin-right: 20px; /* Space between image and text */
-    transition: margin 0.3s ease; /* Transition for margin adjustments */
+    max-width: 150px;     
+    height: auto;          /* keep aspect ratio */
+    border-radius: 50% / 55%; /* slightly vertical oval mask */
+    display: block;
 }
 
 /* Adjust layout for smaller screens without a hard breakpoint */
