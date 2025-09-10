@@ -37,6 +37,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <ul>
             <li><a href="#home" class="active" onclick="setActive(this)">Home</a></li>
             <li><a href="#research" onclick="setActive(this)">Research</a></li>
+            <li><a href="#data" onclick="setActive(this)">Data</a></li>
             <li><a href="/andrew_c_w_myers_CV.pdf" target="_blank">CV</a></li>
         </ul>
     </nav>
@@ -56,8 +57,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="publication" id="research">
     <h2>Publications</h2>
 
-   <ul class="dashed">
-        <li>
+   <ul class="numbered publications">
+        <li data-number="5">
             <a target="_blank" class="bib" href="/myers_extremist_nominee_fundraising.pdf">Do Donors Punish Extremist Primary Nominees? Evidence from Congress and American State Legislatures</a>. Conditionally accepted, <b><i>American Political Science Review</b></i>.
             <details class="abstract-container">
                 <summary>
@@ -73,8 +74,8 @@ Fundraising is a critical element of legislative elections, yet problems of endo
     </ul>
 
         
-    <ul class="dashed">
-        <li>
+   <ul class="numbered publications">
+        <li data-number="4">
             <a target="_blank" class="bib" href="/myers_stateleg_press.pdf">Press Coverage and Accountability in State Legislatures</a>. Forthcoming, <i><b>American Political Science Review</b></i>.
             <details class="abstract-container">
                 <summary>
@@ -92,8 +93,8 @@ State legislatures are critical policymaking bodies, yet recent studies suggest 
         </li>
     </ul>
 
-    <ul class="dashed">
-        <li>
+   <ul class="numbered publications">
+        <li data-number="3">
             <a target="_blank" class="bib" href="/handan-nader_myers_hall_polarization.pdf">Polarization and State Legislative Elections</a> (Joint with Cassandra Handan-Nader and Andrew B. Hall). Forthcoming, <i><b>American Journal of Political Science</b></i>.
             <details class="abstract-container">
                 <summary>
@@ -111,8 +112,8 @@ U.S. state legislatures are critical policymaking institutions that are increasi
         </li>
     </ul>
 
-    <ul class="dashed">
-        <li>
+   <ul class="numbered publications">
+        <li data-number="2">
             <a target="_blank" class="bib" href="/wu_et_al_fraud.pdf">Are Dead People Voting By Mail? Evidence From Washington State Administrative Records</a> (Joint with Jennifer Wu, Chenoa Yorgason, Hanna Folsz, Cassandra Handan-Nader, Tobias Nowacki, Daniel M. Thompson, Jesse Yoder, and Andrew B. Hall). 2024. <i><b>Election Law Journal</b></i>.
             <details class="abstract-container">
                 <summary>
@@ -127,8 +128,8 @@ A common concern about vote-by-mail in the United States is that mail-in ballots
         </li>
     </ul>
 
-    <ul class="dashed">
-        <li>
+   <ul class="numbered publications">
+        <li data-number="1">
             <a target="_blank" class="bib" href="/yoder_et_al_2021_turnout.pdf">How Did Absentee Voting Impact the 2020 U.S. Election?</a> (Joint with Jesse Yoder, Cassandra Handan-Nader, Tobias Nowacki,
 Daniel M. Thompson, Jennifer A. Wu, Chenoa Yorgason, and Andrew B. Hall). 2021. <i><b>Science Advances</b></i>. 
             <details class="abstract-container">
@@ -152,8 +153,8 @@ The 2020 U.S. election saw a record turnout, saw a huge increase in absentee vot
     <h2>Working Papers</h2>
         
 
-   <ul class="dashed">
-        <li>
+   <ul class="numbered publications">
+        <li data-number="3">
             <a target="_blank" class="bib" href="/myers_silfa_fouirnaies_hall_fin_inc_adv.pdf">Do Incumbents Still Enjoy a Financial Advantage? How Individuals Ceased to Advantage Incumbents While Corporate America Continues to Favor Them</a> (Joint with Maria Silfa, Alexander Fouirnaies, and Andrew B. Hall).
             <details class="abstract-container">
                 <summary>
@@ -168,8 +169,8 @@ Incumbents have long enjoyed a substantial fundraising advantage in American ele
         </li>
     </ul>
 
-   <ul class="dashed">
-        <li>
+   <ul class="numbered publications">
+        <li data-number="2">
             The Hidden Incumbency Advantage: How Officeholding Shapes Intra-Party Competition in American Legislative and Executive Elections (Joint with Janet Malzahn).
             <details class="abstract-container">
                 <summary>
@@ -182,8 +183,8 @@ The incumbency advantage in general elections is one of the most studied feature
         </li>
     </ul>
 
-   <ul class="dashed">
-        <li>
+   <ul class="numbered publications">
+        <li data-number="1">
         <a target="_blank" class="bib" href="/myers_redistricting.pdf">How Do Legislators Adapt to New Electorates? Evidence from Redistricting in Congress and U.S. State Legislatures</a>.
             <details class="abstract-container">
                 <summary>
@@ -197,10 +198,11 @@ A central question about democracy is whether elected officials adapt to their c
     </ul>
 
 
+<div class="publication" id="data">
 <h2>Datasets</h2>
         
-   <ul class="dashed">
-        <li>
+   <ul class="numbered publications">
+        <li data-number="2">
             State Legislative Priamary Election Returns Dataset, 1990-2024 (Joint with Alexander Fouirnaies, Andrew B. Hall, Cassandra Handan-Nader, and Steven Rogers). 
             <details class="abstract-container">
                 <summary>
@@ -214,8 +216,8 @@ The State Legislative Primary Election Returns Dataset contains vote returns in 
         </li>
     </ul>
 
-   <ul class="dashed">
-        <li>
+   <ul class="numbered publications">
+        <li data-number="1">
             State Voter Registration Panel, 2010-2022 (Joint with Justin Grimmer and Kasey Rhee). 
             <details class="abstract-container">
                 <summary>
@@ -228,7 +230,7 @@ The State Voter Registration Panel contains voter registration snapshots collect
             </details>
         </li>
     </ul>
-        
+</div> 
 
 <!--
    <ul class="dashed">
@@ -251,7 +253,6 @@ Term limits have dramatically reshaped many features of legislative politics, ye
 
 <style>
 
-
 ul.dashed {
     list-style: none; /* Remove default bullets */
     padding-left: 0;
@@ -267,6 +268,26 @@ ul.dashed li::before {
     position: absolute;
     left: 0;
 }
+
+/* New styles for numbered lists */
+ul.numbered {
+    list-style: none; /* Remove default bullets */
+    padding-left: 0;
+}
+
+ul.numbered li {
+    position: relative;
+    padding-left: 25px; /* Adjust this value for desired alignment */
+}
+
+ul.numbered li::before {
+    content: attr(data-number) "."; /* Use the data-number attribute with a period */
+    position: absolute;
+    left: 0;
+    font-weight: bold;
+    color: #333;
+}
+
 
 /* Style for the replication link */
 .replication-link {
