@@ -1,8 +1,10 @@
+import { documentFilterSql } from "./documents.mjs";
+
 export async function pdfPageReport(db, dates, path, excludePersonal) {
   const response = await db.prepare(`WITH timed AS MATERIALIZED (
     SELECT s.id,h.pdf_attention AS attention FROM reading_sessions s
     JOIN reading_hours h ON h.session_id = s.id AND h.hour >= ?1 AND h.hour < ?2
-    WHERE s.path = ?3 AND s.kind = 'pdf_request' AND h.pdf_attention IS NOT NULL
+    WHERE ${documentFilterSql("s.path", "?3", false)} AND s.path != '/myers_term_limits.pdf' AND s.kind = 'pdf_request' AND h.pdf_attention IS NOT NULL
       ${excludePersonal ? "AND s.is_personal = 0 AND s.visitor_hash NOT IN (SELECT visitor_hash FROM personal_visitors)" : ""}
   ), per_session AS (
     SELECT t.id, CAST(p.key AS INTEGER) + 1 AS page, SUM(p.value) AS seconds

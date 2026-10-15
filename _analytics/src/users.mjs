@@ -4,6 +4,7 @@ import { queryUsage } from "./report-plan.mjs";
 import { userReading, historyReading } from "./engagement.mjs";
 import { pdfDiagnostics } from "./pdf-diagnostics.mjs";
 import { parseInbound } from "./inbound.mjs";
+import { documentFilterSql } from "./documents.mjs";
 
 function liveActivityQuery(excludePersonal, page) {
   // Both branches use time indexes; fallback activity never creates heartbeat writes.
@@ -11,7 +12,7 @@ function liveActivityQuery(excludePersonal, page) {
     SELECT s.visitor_hash, s.last_seen AS time, s.last_seen + 315 AS expires
     FROM reading_sessions s WHERE s.active = 1
       AND s.last_seen >= unixepoch() - 315 AND s.last_seen <= unixepoch()
-      AND s.last_seen >= ?1 AND s.last_seen < ?2 ${page ? "AND s.path = ?3" : ""}
+      AND s.last_seen >= ?1 AND s.last_seen < ?2 AND s.path != '/myers_term_limits.pdf' ${page ? `AND ${documentFilterSql("s.path", "?3", false)}` : ""}
       ${excludePersonal ? "AND s.is_personal = 0 AND s.visitor_hash NOT IN (SELECT visitor_hash FROM personal_visitors)" : ""}
     UNION ALL
     SELECT e.visitor_hash, e.occurred_at AS time, e.occurred_at + 300 AS expires
@@ -21,7 +22,8 @@ function liveActivityQuery(excludePersonal, page) {
       AND e.bot = 0 AND e.duplicate_of = '' AND e.visitor_hash != ''
       AND e.kind IN ('page_view','pdf_request','outbound_click')
       AND (s.id IS NULL OR s.seq < 0)
-      ${page ? "AND CASE WHEN e.path IN ('/index','/index.html') THEN '/' ELSE e.path END = ?3" : ""}
+      AND e.path != '/myers_term_limits.pdf'
+      ${page ? `AND ${documentFilterSql("e.path", "?3")}` : ""}
       ${excludePersonal ? "AND e.is_personal = 0 AND e.visitor_hash NOT IN (SELECT visitor_hash FROM personal_visitors)" : ""}
   ) GROUP BY visitor_hash`;
 }
@@ -36,7 +38,7 @@ export async function userReport(db, url, dates, personal, excludePersonal, page
   const params = [...activityParams];
   const measured = [];
   const cohort = page ? `AND visitor_hash IN (SELECT visitor_hash FROM events
-    WHERE CASE WHEN path IN ('/index','/index.html') THEN '/' ELSE path END = ?3
+    WHERE ${documentFilterSql("path", "?3")} AND path != '/myers_term_limits.pdf'
       AND ((occurred_at >= ?1 AND occurred_at < ?2) OR id IN (SELECT session_id FROM reading_hours WHERE hour >= ?1 AND hour < ?2))
       AND bot = 0 AND duplicate_of = '' AND kind IN ('page_view','pdf_request'))` : "";
   const activitySql = liveActivityQuery(excludePersonal, page);
@@ -51,7 +53,7 @@ export async function userReport(db, url, dates, personal, excludePersonal, page
   // The prefix condition uses the existing profile index; full hashes retain exact membership.
   const liveFilter = live ? `AND substr(visitor_hash, 1, 24) IN (SELECT substr(value, 1, 24) FROM json_each(?${params.length}))
     AND visitor_hash IN (SELECT value FROM json_each(?${params.length}))` : "";
-  const filters = `duplicate_of = '' ${excludePersonal ? `AND NOT ${personal}` : ""}
+  const filters = `duplicate_of = '' AND path != '/myers_term_limits.pdf' ${excludePersonal ? `AND NOT ${personal}` : ""}
     AND bot = 0 AND visitor_hash != '' AND kind IN ('page_view', 'pdf_request', 'outbound_click')`;
   const continued = "id IN (SELECT session_id FROM reading_hours WHERE hour >= ?1 AND hour < ?2)";
   const eligible = `FROM events WHERE ((occurred_at >= ?1 AND occurred_at < ?2) OR ${continued}) AND ${filters}`;

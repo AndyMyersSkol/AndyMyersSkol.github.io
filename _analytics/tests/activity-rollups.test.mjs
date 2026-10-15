@@ -47,6 +47,70 @@ async function report(f, options = {}) {
   return result.json();
 }
 
+test("press versions share exact users, reading, filters and breakdowns without rewriting history", async () => {
+  const f = fixture(), { db } = f;
+  const published = "/myers_stateleg_press.pdf", draft = "/myers_congruence.pdf", retired = "/myers_term_limits.pdf";
+  const ids = [insert(db, { path: published }), insert(db, { path: draft }),
+    insert(db, { path: draft, visitor_hash: B }), insert(db, { path: draft, visitor_hash: "" })];
+  insert(db, { path: draft, bot: 1 });
+  insert(db, { path: draft, is_personal: 1 });
+  const retiredId = insert(db, { path: retired, visitor_hash: "c".repeat(64) });
+  const hour = Date.parse("2026-09-18T12:00:00Z") / 1000;
+  for (const [id, path, hash, seconds, downloads] of [
+    [ids[0], published, A, 1, 1], [ids[1], draft, A, 2, 2], [ids[2], draft, B, 4, 1],
+    [retiredId, retired, "c".repeat(64), 900, 99],
+  ]) {
+    db.prepare(`INSERT INTO reading_sessions(id,visitor_hash,path,kind,is_personal,started_at,last_seen)
+      VALUES(?,?,?,'pdf_request',0,?,?)`).run(id, hash, path, hour, hour);
+    db.prepare("INSERT INTO reading_hours(session_id,hour,milliseconds,downloads) VALUES(?,?,?,?)").run(id, hour, seconds * 1000, downloads);
+  }
+  const original = db.prepare("SELECT * FROM events ORDER BY rowid").all();
+  const papers = await report(f);
+  assert.deepEqual(papers.items, [{ section: "main", name: published, count: 4, visitors: 2,
+    identifiedRequests: 3, unidentifiedRequests: 1, readingSeconds: 7, downloads: 4, measuredViews: 3 }]);
+  for (const page of [published, draft]) {
+    assert.deepEqual((await report(f, { page })).items, papers.items);
+    const detail = await report(f, { view: "detail", section: "main", name: page, page });
+    assert.deepEqual(detail.items, papers.items);
+    assert.deepEqual((await report(f, { view: "detail", section: "main", name: published, page })).items, papers.items);
+    assert.ok(detail.breakdowns.every(row => row.name === published));
+    assert.equal(detail.breakdowns.find(row => row.dimension === "browsers").visitors, 2);
+    const users = await report(f, { view: "users", page });
+    assert.equal(users.rows.length, 2);
+  }
+  const all = await report(f, { view: "all" });
+  assert.equal(all.pages.find(row => row.kind === "pdf_request").name, published);
+  assert.equal(all.pdfVisitorsByPath.length, 1);
+  assert.equal(all.pdfVisitorsByPath[0].visitors, 2);
+  const summary = await report(f, { view: "summary" });
+  assert.equal(summary.totals.find(row => row.kind === "pdf_request" && !row.bot).count, 4);
+  assert.equal(summary.totals.find(row => row.kind === "pdf_request" && !row.bot).visitors, 2);
+  assert.equal(summary.engagement.readingSeconds, 7);
+  const daily = await report(f, { view: "daily" });
+  assert.deepEqual(daily.dailyByPage.map(row => [row.name, row.count]), [[published, 4]]);
+  assert.deepEqual((await report(f, { page: retired })).items, []);
+  assert.deepEqual((await report(f, { view: "users", page: retired })).rows, []);
+  assert.deepEqual(db.prepare("SELECT * FROM events ORDER BY rowid").all(), original);
+  db.close();
+});
+
+test("legacy press links redirect with query parameters and the empty PDF is gone", async () => {
+  for (const method of ["GET", "HEAD"]) {
+    const response = await worker.fetch(new Request("https://www.andrewcwmyers.com/myers_congruence.pdf?__pdf=raw&utm_source=test", { method }), {}, {});
+    assert.equal(response.status, 308);
+    assert.equal(response.headers.get("Location"), "https://www.andrewcwmyers.com/myers_stateleg_press.pdf?__pdf=raw&utm_source=test");
+    const gone = await worker.fetch(new Request("https://www.andrewcwmyers.com/myers_term_limits.pdf?__pdf=raw", { method }), {}, {});
+    assert.equal(gone.status, 410);
+    assert.equal(await gone.text(), method === "HEAD" ? "" : "Gone");
+  }
+  for (const event of [{ kind: "pdf_view", path: "/myers_term_limits.pdf" }, { kind: "pdf_click", path: "/", target: "/myers_term_limits.pdf?download=1" }]) {
+    const response = await worker.fetch(new Request("https://www.andrewcwmyers.com/__analytics/event", {
+      method: "POST", headers: { Origin: "https://www.andrewcwmyers.com" }, body: JSON.stringify({ id: crypto.randomUUID(), ...event }),
+    }), {}, {});
+    assert.equal(response.status, 400);
+  }
+});
+
 test("backfill leaves raw records intact and preserves every aggregate dimension", () => {
   const { db } = fixture(false);
   for (let i = 0; i < 200; i++) insert(db, { id: String(i), visitor_hash: [A, B, ""][i % 3],

@@ -2,6 +2,9 @@
 
 Published at https://www.andrewcwmyers.com/ from `main` using GitHub Pages.
 
+The canonical checkout is `~/Dropbox/AndyMyersSkol.github.io`. Make source changes
+there first; `~/AndyMyersSkol.github.io` is a local execution copy.
+
 ## Site Files
 
 - `index.html`, `style.css`, and `script.js`: homepage, styling, and navigation.

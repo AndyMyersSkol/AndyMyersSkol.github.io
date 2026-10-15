@@ -120,7 +120,11 @@ test("all catalog PDFs including appendices and older papers render and accept t
   assert.equal(new Set(documents.map(row => row.name)).size, documents.length);
   for (const doc of documents.filter(row => row.name.endsWith(".pdf"))) {
     const h = setup();
-    const response = await h.fetch(doc.name, { headers: { Accept: "text/html" } });
+    let response = await h.fetch(doc.name, { headers: { Accept: "text/html" } });
+    if (doc.name === "/myers_congruence.pdf") {
+      assert.equal(response.status, 308);
+      response = await h.fetch(new URL(response.headers.get("Location")).pathname, { headers: { Accept: "text/html" } });
+    }
     assert.match(response.headers.get("Content-Type"), /text\/html/);
     const id = (await response.text()).match(/acw-pdf-diagnostic" content="([^"]*)"/)[1];
     const cookie = response.headers.get("Set-Cookie").split(";")[0];

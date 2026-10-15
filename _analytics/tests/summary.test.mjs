@@ -38,7 +38,7 @@ function dates(start = "2026-09-16", end = start) {
 }
 
 function rawSummary(db, range, excludePersonal) {
-  const period = "occurred_at >= ? AND occurred_at < ? AND duplicate_of = ''";
+  const period = "occurred_at >= ? AND occurred_at < ? AND duplicate_of = '' AND path != '/myers_term_limits.pdf'";
   const personal = "(is_personal = 1 OR visitor_hash IN (SELECT visitor_hash FROM personal_visitors))";
   const totals = db.prepare(`SELECT kind, bot, COUNT(*) AS count, COUNT(DISTINCT NULLIF(visitor_hash, '')) AS visitors,
     COUNT(NULLIF(visitor_hash, '')) AS identifiedRequests, COUNT(*) - COUNT(NULLIF(visitor_hash, '')) AS unidentifiedRequests
@@ -163,7 +163,7 @@ test("ten thousand repeated views use compact summaries and no raw event reads",
   assert.equal(db.prepare("SELECT COUNT(*) AS n FROM analytics_hour_visitors").get().n, 2);
   assert.equal(queries.length, 2);
   assert.ok(queries.every(sql => !/\b(?:FROM|JOIN)\s+events\b/i.test(sql)));
-  assert.ok(plans.every(plan => plan.some(row => /USING PRIMARY KEY.*hour>\? AND hour<\?/.test(row.detail))));
+  assert.ok(plans.every(plan => plan.some(row => /USING PRIMARY KEY.*occurred_at>\? AND occurred_at<\?/.test(row.detail))));
   matchesBuckets(db);
   await matchesRaw(fixture);
   db.close();

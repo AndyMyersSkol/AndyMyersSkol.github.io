@@ -2,7 +2,7 @@ import clientSource from "./client.mjs";
 import { inboundDetails } from "./inbound.mjs";
 import { pdfIdentity, pdfCookie, sendPdfEvent } from "./ga.mjs";
 import { excludedBrowser, personalBrowser, preferences, visitorIdentity, visitorHash } from "./preferences.mjs";
-import documents, { viewerDocuments } from "./documents.mjs";
+import documents, { viewerDocuments, documentPathSql, documentFilterSql, canonicalDocumentPath } from "./documents.mjs";
 import { userReport } from "./users.mjs";
 import { TIME_ZONE, pacificDate, pacificMidnight, pacificDaily } from "./time.mjs";
 import { estimatedCounty } from "./geography.mjs";
@@ -175,6 +175,7 @@ async function collect(request, env, ctx) {
   const path = cleanPath(body.path);
   if (!KINDS.has(body.kind) || !path || !/^[\da-f-]{36}$/i.test(body.id || "")) return json({ error: "Invalid event" }, 400);
   const target = body.kind === "outbound_click" ? cleanUrl(body.target) : body.kind === "pdf_click" ? cleanPath(body.target) : "";
+  if (path === "/myers_term_limits.pdf" || target === "/myers_term_limits.pdf") return json({ error: "Unavailable document" }, 400);
   if (["outbound_click", "pdf_click"].includes(body.kind) && !target) return json({ error: "Invalid target" }, 400);
   if (body.kind === "pdf_view" && (!/\.pdf$/i.test(path) || !viewerDocuments.some(document => document.name === path))) return json({ error: "Invalid document" }, 400);
   const visitor = metadata(request).bot ? null : visitorIdentity(request);
@@ -250,7 +251,7 @@ async function report(request, env) {
   const eventTable = rollup ? "analytics_activity_hours" : "events";
   const requestCount = rollup ? "COALESCE(SUM(requests),0)" : "COUNT(*)";
   const identifiedCount = rollup ? "COALESCE(SUM(CASE WHEN visitor_hash != '' THEN requests ELSE 0 END),0)" : "COUNT(NULLIF(visitor_hash, ''))";
-  const period = `occurred_at >= ? AND occurred_at < ?${rollup ? "" : " AND duplicate_of = ''"}${page ? " AND CASE WHEN path IN ('/index','/index.html') THEN '/' ELSE path END = ?3" : ""}`;
+  const period = `occurred_at >= ?1 AND occurred_at < ?2 AND path != '/myers_term_limits.pdf'${rollup ? "" : " AND duplicate_of = ''"}${page ? ` AND ${documentFilterSql("path", "?3")}` : ""}`;
   const personal = "(is_personal = 1 OR visitor_hash IN (SELECT visitor_hash FROM personal_visitors))";
   const where = `${period}${excludePersonal ? ` AND NOT ${personal}` : ""}`;
   if (url.searchParams.get("view") === "pdf_diagnostics") {
@@ -268,7 +269,7 @@ async function report(request, env) {
   if (view === "pdf_pages" || view === "homepage_attention") {
     const name = url.searchParams.get("name") || "";
     if ((url.searchParams.get("section") || "main") !== "main" || cleanPath(name) !== name
-      || (view === "pdf_pages" ? !/\.pdf$/i.test(name) : name !== "/") || (page && page !== name)) return json({ error: "Invalid page selection" }, 400);
+      || (view === "pdf_pages" ? !/\.pdf$/i.test(name) : name !== "/") || (page && canonicalDocumentPath(page) !== canonicalDocumentPath(name))) return json({ error: "Invalid page selection" }, 400);
     const { measured, ...value } = view === "pdf_pages" ? await pdfPageReport(env.DB, dates, name, excludePersonal)
       : await homepageReport(env.DB, dates, excludePersonal);
     return json({ generatedAt: new Date().toISOString(), timeZone: TIME_ZONE, start: dates.start, end: dates.end,
@@ -288,14 +289,15 @@ async function report(request, env) {
   const section = url.searchParams.get("section") || "", name = url.searchParams.get("name") || "";
   if (view === "detail" && (!["main", "outbound"].includes(section) || !name || name.length > 2048)) return json({ error: "Invalid detail query" }, 400);
   // SQLite expression indexes require the same expression, including IN-list order.
-  const mainPath = "CASE WHEN path IN ('/index','/index.html') THEN '/' ELSE path END";
+  const mainPath = documentPathSql();
   const scope = view === "detail" ? section : view === "outbound" ? "outbound" : ["papers", "overview"].includes(view) ? "main" : "";
   const itemFilter = scope === "outbound" ? " AND kind = 'outbound_click'" : scope === "main" ? " AND kind IN ('page_view','pdf_request')" : "";
-  const detailFilter = view === "detail" ? ` AND ${section === "outbound" ? "target" : mainPath} = ?` : "";
+  const detailParameter = page ? "?4" : "?3";
+  const detailFilter = view === "detail" ? ` AND ${section === "outbound" ? `target = ${detailParameter}` : documentFilterSql("path", detailParameter)}` : "";
   const query = (sql) => ({ sql, params: [dates.from, dates.until, ...(page ? [page] : []), ...(view === "detail" && sql.startsWith("WITH activity AS") ? [name] : [])] });
   const activity = (materialized = false) => `WITH activity AS ${materialized ? "MATERIALIZED " : ""}(
     SELECT *, CASE WHEN kind = 'outbound_click' THEN 'outbound' ELSE 'main' END AS section,
-      CASE WHEN kind = 'outbound_click' THEN target WHEN path IN ('/index.html', '/index') THEN '/' ELSE path END AS name
+      CASE WHEN kind = 'outbound_click' THEN target ELSE ${mainPath} END AS name
     FROM ${eventTable} WHERE ${where} AND bot = 0 AND kind IN ('page_view', 'pdf_request', 'outbound_click')${itemFilter}${detailFilter}
   )`;
   const counts = `${requestCount} AS count, COUNT(DISTINCT NULLIF(visitor_hash, '')) AS visitors,
@@ -314,14 +316,14 @@ async function report(request, env) {
   const queries = [
     query(`SELECT kind, bot, ${counts} FROM ${eventTable} WHERE ${where} GROUP BY kind, bot`),
     query(`SELECT strftime('%Y-%m-%dT%H:00:00Z', occurred_at, 'unixepoch') AS hour, kind, ${view === "daily" ? `${mainPath} AS name,` : ""} ${requestCount} AS count FROM ${eventTable} WHERE ${where} AND bot = 0 GROUP BY hour, kind${view === "daily" ? ", name" : ""} ORDER BY hour`),
-    query(`SELECT CASE WHEN kind = 'pdf_click' THEN target ELSE path END AS name, kind, ${requestCount} AS count FROM ${eventTable} WHERE ${where} AND bot = 0 AND kind IN ('pdf_request','pdf_click','page_view') GROUP BY name, kind ORDER BY count DESC LIMIT 100`),
+    query(`SELECT CASE WHEN kind = 'pdf_click' THEN ${documentPathSql("target")} ELSE ${mainPath} END AS name, kind, ${requestCount} AS count FROM ${eventTable} WHERE ${where} AND bot = 0 AND kind IN ('pdf_request','pdf_click','page_view') AND (kind != 'pdf_click' OR target != '/myers_term_limits.pdf') GROUP BY name, kind ORDER BY count DESC LIMIT 100`),
     query(`SELECT target AS name, ${requestCount} AS count FROM ${eventTable} WHERE ${where} AND bot = 0 AND kind = 'outbound_click' GROUP BY target ORDER BY count DESC LIMIT 100`),
     query(`SELECT country AS name, kind, ${requestCount} AS count FROM ${eventTable} WHERE ${where} AND bot = 0 AND kind IN ('page_view','pdf_request','outbound_click') GROUP BY country, kind ORDER BY count DESC`),
     query(`SELECT ${inboundSource} AS name, kind, ${requestCount} AS count FROM ${eventTable} WHERE ${where} AND bot = 0 AND kind IN ('page_view','pdf_request','outbound_click') GROUP BY name, kind ORDER BY count DESC`),
     query(`SELECT browser AS name, device, os, kind, ${requestCount} AS count FROM ${eventTable} WHERE ${where} AND bot = 0 AND kind IN ('page_view','pdf_request','outbound_click') GROUP BY browser, device, os, kind ORDER BY count DESC`),
     query(`SELECT source, medium, campaign, ${requestCount} AS count FROM ${eventTable} WHERE ${where} AND bot = 0 AND source != '' GROUP BY source, medium, campaign ORDER BY count DESC LIMIT 100`),
     query(`SELECT COUNT(DISTINCT NULLIF(visitor_hash, '')) AS visitors, ${identifiedCount} AS identifiedRequests, ${requestCount} - ${identifiedCount} AS unidentifiedRequests FROM ${eventTable} WHERE ${where} AND bot = 0 AND kind = 'pdf_request'`),
-    query(`SELECT path AS name, COUNT(DISTINCT NULLIF(visitor_hash, '')) AS visitors, ${identifiedCount} AS identifiedRequests, ${requestCount} - ${identifiedCount} AS unidentifiedRequests FROM ${eventTable} WHERE ${where} AND bot = 0 AND kind = 'pdf_request' GROUP BY path ORDER BY ${requestCount} DESC LIMIT 100`),
+    query(`SELECT ${mainPath} AS name, COUNT(DISTINCT NULLIF(visitor_hash, '')) AS visitors, ${identifiedCount} AS identifiedRequests, ${requestCount} - ${identifiedCount} AS unidentifiedRequests FROM ${eventTable} WHERE ${where} AND bot = 0 AND kind = 'pdf_request' GROUP BY name ORDER BY ${requestCount} DESC LIMIT 100`),
     query(`${activity()} SELECT section, name, ${counts} FROM activity GROUP BY section, name ORDER BY count DESC`),
     query(`${activity(true)}, breakdowns AS (${breakdowns}), ranked AS (
       SELECT *, ROW_NUMBER() OVER (PARTITION BY section, name, dimension ORDER BY count DESC, value, detail) AS rank FROM breakdowns
@@ -357,7 +359,7 @@ async function report(request, env) {
   let engagement;
   if (["all", "summary", "overview", "papers"].includes(view) || (view === "detail" && section === "main")) {
     const reading = await readingItems(env.DB, dates, excludePersonal, view === "detail" ? name : page);
-    if (page && view === "detail" && name !== page) reading.rows = [];
+    if (page && view === "detail" && canonicalDocumentPath(name) !== canonicalDocumentPath(page)) reading.rows = [];
     engagement = reading.rows.reduce((total, row) => ({ readingSeconds: total.readingSeconds + row.readingSeconds, downloads: total.downloads + row.downloads }), { readingSeconds: 0, downloads: 0 });
     results[10].results = addReadingItems(results[10].results, reading.rows);
     measuredQueries.push(reading.measured);
@@ -412,6 +414,12 @@ export default {
     if (url.pathname === "/__analytics/client.js") return new Response(`(${clientSource})(${JSON.stringify(env.GA_MEASUREMENT_ID || "")});`, { headers: {
       "Content-Type": "application/javascript", "Cache-Control": "public, max-age=300", "X-Content-Type-Options": "nosniff" } });
     if (url.pathname.startsWith("/__analytics/")) return json({ error: "Not found" }, 404);
+    if (url.pathname === "/myers_term_limits.pdf") return new Response(request.method === "HEAD" ? null : "Gone", {
+      status: 410, headers: { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "public, max-age=300" } });
+    if (["GET", "HEAD"].includes(request.method) && url.pathname === "/myers_congruence.pdf") {
+      url.pathname = "/myers_stateleg_press.pdf";
+      return Response.redirect(url.href, 308);
+    }
     // Public GET/HEAD content can bypass a tracking-code exception. Private APIs cannot.
     if (request.method === "GET" || request.method === "HEAD") ctx.passThroughOnException?.();
     const pdfPath = /\.pdf$/i.test(url.pathname) && viewerDocuments.some(document => document.name === url.pathname);

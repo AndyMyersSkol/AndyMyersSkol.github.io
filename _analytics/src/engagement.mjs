@@ -1,6 +1,7 @@
 import { validAttention, summarizeAttention, ATTENTION_MONOTONIC } from "./homepage-attention.mjs";
 import { validPdfAttention, summarizePdfAttention, PDF_ATTENTION_MONOTONIC } from "./pdf-attention.mjs";
 import { clientDetails, validInteractions, summarizeInteractions, INTERACTIONS_MONOTONIC } from "./visit-details.mjs";
+import { documentPathSql, documentFilterSql } from "./documents.mjs";
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 const KINDS = new Set(["page_view", "pdf_request"]);
@@ -96,11 +97,11 @@ export async function saveReading(db, body, visitor, now = Date.now()) {
 }
 
 export async function readingItems(db, dates, excludePersonal, path = "") {
-  const response = await db.prepare(`SELECT s.path AS name, SUM(h.milliseconds) / 1000.0 AS readingSeconds,
+  const response = await db.prepare(`SELECT ${documentPathSql("s.path")} AS name, SUM(h.milliseconds) / 1000.0 AS readingSeconds,
       SUM(h.downloads) AS downloads, COUNT(DISTINCT CASE WHEN s.measurement_source = 'viewer' THEN s.id END) AS measuredViews
     FROM reading_hours h JOIN reading_sessions s ON s.id = h.session_id
-    WHERE h.hour >= ? AND h.hour < ? ${excludePersonal ? `AND NOT ${PERSONAL}` : ""} ${path ? "AND s.path = ?" : ""}
-    GROUP BY s.path`).bind(dates.from, dates.until, ...(path ? [path] : [])).all();
+    WHERE h.hour >= ?1 AND h.hour < ?2 AND s.path != '/myers_term_limits.pdf' ${excludePersonal ? `AND NOT ${PERSONAL}` : ""} ${path ? `AND ${documentFilterSql("s.path", "?3", false)}` : ""}
+    GROUP BY name`).bind(dates.from, dates.until, ...(path ? [path] : [])).all();
   return { rows: response.results, measured: ["readingItems", response] };
 }
 
@@ -122,7 +123,7 @@ export async function userReading(db, dates, excludePersonal, labels) {
   const response = await db.prepare(`WITH eligible AS (
       SELECT s.*, CASE WHEN s.recaptcha_at >= ? AND s.recaptcha_at < ? THEN s.recaptcha_at END AS period_bot_at
       FROM reading_sessions s WHERE substr(s.visitor_hash,1,24) IN (${labels.map(() => "?").join(",")})
-        AND s.started_at < ? ${excludePersonal ? `AND NOT ${PERSONAL}` : ""}
+        AND s.started_at < ? AND s.path != '/myers_term_limits.pdf' ${excludePersonal ? `AND NOT ${PERSONAL}` : ""}
     ), sessions AS (
       SELECT eligible.*, ROW_NUMBER() OVER (PARTITION BY visitor_hash ORDER BY last_seen DESC, id) AS recent,
         ROW_NUMBER() OVER (PARTITION BY visitor_hash ORDER BY period_bot_at DESC, id) AS risk_recent FROM eligible

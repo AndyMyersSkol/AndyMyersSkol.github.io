@@ -8,6 +8,12 @@ and PDF updates still publish through GitHub Pages. PDF URLs and bytes stay the
 same; supported browser navigation now opens the bundled PDF.js viewer. The
 homepage design is unchanged. The `_analytics` directory is not published by Jekyll.
 
+`/myers_congruence.pdf` redirects to `/myers_stateleg_press.pdf`. Reports group
+both versions before counting distinct visitors and include both in page filters,
+reading totals, and breakdowns. Raw events and sessions retain their original paths.
+The empty `/myers_term_limits.pdf` is retired (HTTP 410), excluded from reports,
+and rejected by the browser collector; it is not a paper download.
+
 ## Deployment
 
 1. `npm ci`, then `npm test` and `npm run test:bundle`. The bundle test catches
@@ -212,8 +218,7 @@ See [v3](https://developers.google.com/recaptcha/docs/v3),
 
 The real generic PDF.js 6.3.289 compatibility (legacy) release and licenses are in `viewer-assets/` and deployed
 through the private ASSETS binding, served at `/__pdfjs/`. The Worker allowlists
-known documents, including all six public appendices and the older congruence and
-term-limits PDFs, and serves its HTML at the original PDF URL for explicit document
+known documents, including all six public appendices, and serves its HTML at the original PDF URL for explicit document
 or iframe navigations (`Sec-Fetch-Mode: navigate`), even without HTML in Accept.
 Accepting HTML remains a fallback when Fetch Metadata is missing. Original bytes
 remain available at `?__pdf=raw`. Explicit non-navigation fetches, range requests,

@@ -1,5 +1,6 @@
 import { visitorHash, personalBrowser } from "./preferences.mjs";
 import { automatedClient } from "./automated-client.mjs";
+import { documentFilterSql } from "./documents.mjs";
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 const ERRORS = new Set(["render_error", "document_error", "initialization_error", "script_error", "runtime_error", "promise_error", "unsupported_browser", "startup_timeout", "tracking_http", "tracking_network", "engagement_start_error"]);
@@ -64,7 +65,7 @@ export async function pdfDiagnostics(db, dates, excludePersonal, user = "", offs
     d.error_detail AS errorDetail, d.recaptcha_score AS botScore, d.recaptcha_status AS assessmentStatus,
     EXISTS(SELECT 1 FROM reading_sessions s WHERE s.id = d.id AND s.visitor_hash = d.visitor_hash AND s.measurement_source = 'viewer') AS confirmed
     FROM pdf_diagnostics d WHERE d.occurred_at >= ? AND d.occurred_at < ?
-    ${user ? "AND substr(d.visitor_hash,1,24) = ?" : ""} ${path ? "AND d.path = ?" : ""}
+    ${user ? "AND substr(d.visitor_hash,1,24) = ?3" : ""} ${path ? `AND ${documentFilterSql("d.path", user ? "?4" : "?3", false)}` : ""}
     ${excludePersonal ? "AND d.is_personal = 0 AND NOT EXISTS(SELECT 1 FROM personal_visitors p WHERE p.visitor_hash = d.visitor_hash)" : ""}
     ORDER BY d.occurred_at DESC, d.id LIMIT 51 OFFSET ?`)
     .bind(dates.from, dates.until, ...(user ? [user] : []), ...(path ? [path] : []), offset).all();

@@ -24,8 +24,23 @@ export const viewerDocuments = [...papers,
   ...papers.filter(paper => appendixParents.has(paper.name)).map(paper => ({
     name: paper.name.replace(/\.pdf$/, "_appendix.pdf"), title: paper.title + " - Appendix",
   })),
-  { name: "/myers_congruence.pdf", title: "myers_congruence.pdf" },
-  { name: "/myers_term_limits.pdf", title: "myers_term_limits.pdf" },
+  // Accept check-ins from legacy viewers that were open before the redirect.
+  { name: "/myers_congruence.pdf", title: "Press Coverage and Accountability in State Legislatures" },
 ];
+
+// Keep raw history intact; group versions before counting distinct browsers.
+export function canonicalDocumentPath(path) {
+  return path === "/myers_congruence.pdf" ? "/myers_stateleg_press.pdf" : path;
+}
+
+export function documentPathSql(column = "path") {
+  return `CASE WHEN ${column} IN ('/index','/index.html') THEN '/' WHEN ${column} = '/myers_congruence.pdf' THEN '/myers_stateleg_press.pdf' ELSE ${column} END`;
+}
+
+export function documentFilterSql(column, parameter, homepage = true) {
+  // Preserve the existing homepage expression index for selective page queries.
+  const indexedPath = homepage ? `CASE WHEN ${column} IN ('/index','/index.html') THEN '/' ELSE ${column} END` : column;
+  return `${indexedPath} IN (${parameter}, CASE ${parameter} WHEN '/myers_stateleg_press.pdf' THEN '/myers_congruence.pdf' WHEN '/myers_congruence.pdf' THEN '/myers_stateleg_press.pdf' ELSE ${parameter} END)`;
+}
 
 export default papers;
